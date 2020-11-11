@@ -12,12 +12,14 @@ import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.CaptureActivity;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
 
 //        copas dari stackoverflow : https://stackoverflow.com/questions/14592219/how-to-call-barcode-scanner-in-webview-and-passing-it-back
         webView = (WebView) findViewById(R.id.mainWebView);    //you might need to change webView1
-        webView.loadUrl("http://192.168.1.197/TesBarcodeAndroid/");
+        webView.loadUrl("http://192.168.1.157/ritelmaster/");
         webView.getSettings().setJavaScriptEnabled(true);
         webView.addJavascriptInterface(new JavaScriptInterface(this), "Android");
 
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebChromeClient(new WebChromeClient());
 //        akhir copas
     }
 
@@ -58,10 +60,12 @@ public class MainActivity extends AppCompatActivity {
             integrator.setPrompt(String.valueOf("Scan Barcode"));
             integrator.setBeepEnabled(true);
             integrator.setCameraId(0);  // Use a specific camera of the device
+            integrator.setCaptureActivity(PortraitMode.class);
             integrator.initiateScan();
         }
 
     }
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         //retrieve scan result
