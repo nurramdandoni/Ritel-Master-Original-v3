@@ -11,8 +11,10 @@ import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -35,11 +37,18 @@ public class MainActivity extends AppCompatActivity {
 
 //        copas dari stackoverflow : https://stackoverflow.com/questions/14592219/how-to-call-barcode-scanner-in-webview-and-passing-it-back
         webView = (WebView) findViewById(R.id.mainWebView);    //you might need to change webView1
-        webView.loadUrl("http://192.168.1.157/ritelmaster/");
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.addJavascriptInterface(new JavaScriptInterface(this), "Android");
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.getSettings().setAppCacheEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
 
-        webView.setWebChromeClient(new WebChromeClient());
+        webView.addJavascriptInterface(new JavaScriptInterface(this), "Android");
+        webView.setWebViewClient(new WebViewClient());
+        webView.loadUrl("https://bajupedia.id/rm");
+
 //        akhir copas
     }
 
@@ -62,6 +71,14 @@ public class MainActivity extends AppCompatActivity {
             integrator.setCameraId(0);  // Use a specific camera of the device
             integrator.setCaptureActivity(PortraitMode.class);
             integrator.initiateScan();
+        }
+        @JavascriptInterface
+        public void androidAlert(String message) {
+            DialogBox dbx = new DialogBox();
+            dbx.dialogBox(message, "Ok", "",mContext);
+//            Toast toast = Toast.makeText(getApplicationContext(), "Ini Alert Box Beranda!", Toast.LENGTH_LONG);
+//            toast.show();
+            Log.d("cek","Klik dari Javascript");
         }
 
     }
